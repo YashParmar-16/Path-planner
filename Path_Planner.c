@@ -104,7 +104,7 @@ int graph[MAX_NODES][MAX_NODES] = {
     {1},     // Node 0
     {0, 2, 29},  // Node 1
     {1, 3, 8},   // Node 2
-    {2, 4},     // Node 3
+    {2, 4, 28},     // Node 3
     {3, 5, 6},  // Node 4
     {4},     // Node 5
     {4, 7},     // Node 6
@@ -113,14 +113,14 @@ int graph[MAX_NODES][MAX_NODES] = {
     {8, 10, 11},    // Node 9
     {9},     // Node 10
     {9},     // Node 11
-    {8, 13},    // Node 12
+    {8, 13, 19},    // Node 12
     {12, 14},   // Node 13
     {13, 15, 16},  // Node 14
     {14},    // Node 15
     {14, 17, 18},  // Node 16
     {16},    // Node 17
     {16, 19},   // Node 18
-    {18, 20},   // Node 19
+    {12, 18, 20},   // Node 19
     {19, 21, 24, 29},  // Node 20
     {20, 22, 23},     // Node 21
     {21},    // Node 22
@@ -129,7 +129,7 @@ int graph[MAX_NODES][MAX_NODES] = {
     {24, 26},  // Node 25
     {25, 27, 28},  // Node 26
     {26},    // Node 27
-    {26, 29},  // Node 28
+    {3, 26, 29},  // Node 28
     {1, 20, 28}  // Node 29
 };
 
@@ -148,12 +148,15 @@ int minDistance(int dist[], bool sptSet[]) {
 }
 
 void printPath(int parent[], int destination, uint8_t path_planned[], uint8_t *idx) {
-    if (parent[destination] == -1)
+    if (parent[destination] == -1) {
         return;
+    }
 
     printPath(parent, parent[destination], path_planned, idx);
     path_planned[(*idx)++] = destination;
 }
+
+
 
 // Function to implement Dijkstra's algorithm and store the path in path_planned
 
@@ -198,13 +201,6 @@ void storePath(int parent[], int end, uint8_t path_planned[], uint8_t* idx) {
 
 // Function to perform Dijkstra's algorithm and store the path
 void findAndStoreShortestPath(int start, int end, uint8_t path_planned[], uint8_t *idx) {
-    // Check if the start and end points are within a valid range
-    if (start < 0 || start >= MAX_NODES || end < 0 || end >= MAX_NODES) {
-        _put_str("Invalid start or end point.\n");
-    } else {
-        // Find and store the shortest path
-        dijkstra(start, end, path_planned, idx);
-    }
     int dist[MAX_NODES];
     bool sptSet[MAX_NODES];
     int parent[MAX_NODES];
@@ -212,11 +208,24 @@ void findAndStoreShortestPath(int start, int end, uint8_t path_planned[], uint8_
     // Initialize idx to 0
     *idx = 0;
 
-    // The rest of the code remains the same
-    storePath(parent, end, path_planned, idx);
+    // Initialize dist, sptSet, and parent arrays
+    for (int i = 0; i < MAX_NODES; i++) {
+        dist[i] = INT_MAX;
+        sptSet[i] = false;
+        parent[i] = -1;
+    }
+
+    // Check if the start and end points are within a valid range
+    if (start < 0 || start >= MAX_NODES || end < 0 || end >= MAX_NODES) {
+        _put_str("Invalid start or end point.\n");
+    } else {
+        // Find and store the shortest path
+        dijkstra(start, end, path_planned, idx);
+    }
 }
 
 // Example usage:
+
 int main(int argc, char const *argv[]) {
     uint8_t path_planned[32];
     uint8_t idx = 0;
